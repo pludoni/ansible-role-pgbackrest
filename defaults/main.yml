@@ -148,4 +148,4 @@ pgbackrest_postgresql_conf_marker_end: "END"
 # and don't want to flush all handlers just for this one process, so it only
 # runs when the postgres config returns 'changed' status.
 pgbackrest_postgresql_service_name: postgresql
-pgbackrest_postgresql_handler_service_state: reloaded
+pgbackrest_postgresql_handler_service_state: restarted

@@ -16,6 +16,7 @@
   tags:
     - molecule-notest
     - pgbackrest
+  failed_when: false
 
 - name: >-
     Remove systemd .service and .timer files if the systemd timer is disbabled
@@ -214,9 +215,7 @@
     day: "{{ (pgbackrest_full_cron_schedule.split())[2] }}"
     month: "{{ (pgbackrest_full_cron_schedule.split())[3] }}"
     weekday: "{{ (pgbackrest_full_cron_schedule.split())[4] }}"
-    owner: root
-    group: root
-    mode: "0644"
+    user: postgres
     state: >-
       {%- if pgbackrest_cron_enabled -%}
         present
@@ -232,6 +231,7 @@
   ansible.builtin.cron:
     name: "pgbackrest diff backup schedule"
     cron_file: pgbackrest
+    user: postgres
     job: >-
       {{ pgbackrest_backup_script_path }}
       -s "{{ pgbackrest_backup_stanzas | join(',') }}"
@@ -241,9 +241,6 @@
     day: "{{ (pgbackrest_diff_cron_schedule.split())[2] }}"
     month: "{{ (pgbackrest_diff_cron_schedule.split())[3] }}"
     weekday: "{{ (pgbackrest_diff_cron_schedule.split())[4] }}"
-    owner: root
-    group: root
-    mode: "0644"
     state: >-
       {%- if (
           pgbackrest_cron_enabled and
@@ -257,23 +254,22 @@
   when:
     - "pgbackrest_cron_enabled"
     - "not pgbackrest_systemd_timer_enabled"
+    - pgbackrest_diff_cron_schedule
 
 - name: Install the pgbackrest incremental backup cron job
   ansible.builtin.cron:
     name: "pgbackrest incremental backup schedule"
     cron_file: pgbackrest
+    user: postgres
     job: >-
       {{ pgbackrest_backup_script_path }}
       -s "{{ pgbackrest_backup_stanzas | join(',') }}"
       incr
-    minute: "{{ (pgbackrest_cron_schedule.split())[0] }}"
-    hour: "{{ (pgbackrest_cron_schedule.split())[1] }}"
-    day: "{{ (pgbackrest_cron_schedule.split())[2] }}"
-    month: "{{ (pgbackrest_cron_schedule.split())[3] }}"
-    weekday: "{{ (pgbackrest_cron_schedule.split())[4] }}"
-    owner: root
-    group: root
-    mode: "0644"
+    minute: "{{ (pgbackrest_incr_cron_schedule.split())[0] }}"
+    hour: "{{ (pgbackrest_incr_cron_schedule.split())[1] }}"
+    day: "{{ (pgbackrest_incr_cron_schedule.split())[2] }}"
+    month: "{{ (pgbackrest_incr_cron_schedule.split())[3] }}"
+    weekday: "{{ (pgbackrest_incr_cron_schedule.split())[4] }}"
     state: >-
       {%- if (
           pgbackrest_cron_enabled and

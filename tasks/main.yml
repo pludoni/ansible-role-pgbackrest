@@ -161,7 +161,8 @@
   loop: >-
     {{ _pgbackrest_conf_cluster_stanzas
         | dict2items
-        | rejectattr('key', 'equalto', 'global') }}
+        | rejectattr('key', 'equalto', 'global')
+        | rejectattr('key', 'equalto', 'global:archive-push') }}
   loop_control:
     loop_var: stanza
   tags:

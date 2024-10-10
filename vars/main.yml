@@ -7,6 +7,9 @@ __pgbackrest_packages:
   Debian:
     default:
       - pgbackrest
+  Ubuntu:
+    default:
+      - pgbackrest
 
 __pgbackrest_postgresql_rhel_repo_package:
   CentOS:
